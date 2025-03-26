@@ -26,42 +26,47 @@
             color: #443344; /* Dark muted color for text */
         }
         main {
+             /* The canvas will be placed here by p5.js */
              margin-bottom: 1em;
+             /* Add a border/shadow to visually separate canvas */
+             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+             border: 1px solid #ddd; /* Light border */
+             line-height: 0; /* Prevent extra space below canvas */
         }
         h1 {
             color: #ff69b4; /* Hot pink title */
-            margin-bottom: 0.5em; /* Adjust spacing */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle shadow */
+            margin-bottom: 0.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         .controls {
             margin-bottom: 1em;
             padding: 0.5em 1em;
-            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white bg */
+            background-color: rgba(255, 255, 255, 0.7);
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             font-size: 0.9em;
-            text-align: center; /* Center text inside controls box */
+            text-align: center;
         }
-        .controls kbd { /* Style keyboard keys */
+        .controls kbd {
             display: inline-block;
             background-color: #eee;
             border-radius: 3px;
             padding: 2px 5px;
             border: 1px solid #ccc;
             box-shadow: 1px 1px 1px #999;
-            font-family: monospace; /* Use mono for keys */
+            font-family: monospace;
             font-size: 1.1em;
             margin: 0 2px;
-            vertical-align: middle; /* Align keys better with text */
+            vertical-align: middle;
         }
         footer {
             padding: 5px;
             font-size: 0.8em;
-            color: #776677; /* Muted color for footer */
+            color: #776677;
             text-align: center;
         }
         footer a {
-            color: #ff69b4; /* Hot pink link color */
+            color: #ff69b4;
             text-decoration: none;
             font-weight: bold;
         }
@@ -77,6 +82,7 @@
 <body>
     <h1>Kawaii Tetris 🧸🧱✨</h1>
 
+    <!-- p5.js will append the canvas into this main element -->
     <main id="canvas-container"></main>
 
     <div class="controls">
