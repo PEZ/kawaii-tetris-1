@@ -1,283 +1,206 @@
 // --- Constants ---
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
-const BLOCK_SIZE = 30; // pixels
+const BLOCK_SIZE = 30;
+const INITIAL_DROP_INTERVAL = 1000; // Milliseconds per row drop (1 second)
 
 // SUPER KAWAII Color definitions! ✨💖🍬
-const COLORS = {
-    0: [250, 240, 245], // Background (empty cell) - Very Light Pink/Off-white
-    1: [137, 207, 240], // Baby Blue (I piece?)
-    2: [255, 182, 193], // Light Pink (L piece?)
-    3: [255, 253, 150], // Pastel Yellow (O piece?)
-    4: [191, 155, 219], // Lavender (J piece?)
-    5: [144, 238, 144], // Light Green (S piece?)
-    6: [255, 160, 190], // Soft Coral/Pink (T piece?)
-    7: [255, 218, 185]  // Peach Puff (Z piece?)
-};
-const BORDER_COLOR = [120, 100, 110]; // A slightly muted purple/gray border
+const COLORS = { /* ... colors remain the same ... */ };
+const BORDER_COLOR = [120, 100, 110];
 
 // --- Tetromino Definitions ---
-// IMPORTANT: Verify these shapes/rotations!
-const TETROMINOES = {
-    'I': { color: 1, shapes: [ [[1, -1], [1, 0], [1, 1], [1, 2]], [[-1, 1], [0, 1], [1, 1], [2, 1]], [[2, -1], [2, 0], [2, 1], [2, 2]], [[-1, 0], [0, 0], [1, 0], [2, 0]], ] },
-    'L': { color: 2, shapes: [ [[0, -1], [1, -1], [1, 0], [1, 1]], [[0, 0], [1, 0], [2, 0], [0, 1]], [[1, -1], [1, 0], [1, 1], [2, 1]], [[2, -1], [0, 0], [1, 0], [2, 0]], ] },
-    'J': { color: 4, shapes: [ [[0, 1], [1, -1], [1, 0], [1, 1]], [[0, 0], [1, 0], [2, 0], [2, -1]], [[1, -1], [1, 0], [1, 1], [2, -1]], [[0, 0], [0, 1], [1, 0], [2, 0]], ] },
-    'O': { color: 3, shapes: [ [[0, 0], [0, 1], [1, 0], [1, 1]] ] },
-    'S': { color: 5, shapes: [ [[0, 0], [0, 1], [1, -1], [1, 0]], [[0, 0], [1, 0], [1, 1], [2, 1]], [[2, 0], [2, 1], [1, -1], [1, 0]], [[0, -1], [1, -1], [1, 0], [2, 0]], ] },
-    'T': { color: 6, shapes: [ [[0, 0], [1, -1], [1, 0], [1, 1]], [[0, 0], [1, 0], [1, 1], [2, 0]], [[1, -1], [1, 0], [1, 1], [2, 0]], [[0, 0], [1, -1], [1, 0], [2, 0]], ] },
-    'Z': { color: 7, shapes: [ [[0, -1], [0, 0], [1, 0], [1, 1]], [[0, 1], [1, 0], [1, 1], [2, 0]], [[1, -1], [1, 0], [2, 0], [2, 1]], [[0, 0], [1, -1], [1, 0], [2, -1]], ] }
-};
-
+const TETROMINOES = { /* ... definitions remain the same ... */ };
 const PIECE_TYPES = Object.keys(TETROMINOES);
 
 // --- Game State ---
 let gameState;
+let lastDropTime = 0; // Track time for gravity
+let currentDropInterval = INITIAL_DROP_INTERVAL; // Allow changing speed later
 
 // --- Core Game Logic Functions (Data Transformation) ---
 
-/**
- * Returns a random tetromino type key.
- */
-function getRandomPieceType() {
-    const randomIndex = Math.floor(Math.random() * PIECE_TYPES.length);
-    return PIECE_TYPES[randomIndex];
-}
-
-/**
- * Checks if a given piece position/rotation is valid on the board.
- * @param {object} piece - The piece object { type, rotation, x, y }.
- * @param {Array<Array<number>>} board - The game board data.
- * @returns {boolean} - True if the position is valid, false otherwise.
- */
-function isPositionValid(piece, board) {
-    if (!piece || !TETROMINOES[piece.type]) return false; // Basic sanity check
-
-    const pieceDefinition = TETROMINOES[piece.type];
-    const rotationIndex = piece.rotation % pieceDefinition.shapes.length;
-    const shape = pieceDefinition.shapes[rotationIndex];
-
-    if (!shape) return false; // Shape definition missing
-
-    // Check each block of the piece's shape
-    for (const offset of shape) {
-        const blockRow = piece.y + offset[0];
-        const blockCol = piece.x + offset[1];
-
-        // 1. Check boundaries (left, right, bottom)
-        if (blockCol < 0 || blockCol >= BOARD_WIDTH || blockRow >= BOARD_HEIGHT) {
-            return false; // Out of bounds (left, right, or below bottom)
-        }
-
-        // 2. Check collision with settled blocks on the board
-        // Only check if the block is within the visible board vertically (row >= 0)
-        if (blockRow >= 0) {
-            // Ensure board[blockRow] exists before accessing board[blockRow][blockCol]
-            if (!board[blockRow] || board[blockRow][blockCol] !== 0) {
-                // Collision detected with a non-empty cell
-                return false;
-            }
-        }
-        // Note: We allow blocks to be above the top boundary (blockRow < 0) during spawn/movement
-    }
-
-    // If all blocks passed the checks, the position is valid
-    return true;
-}
-
+// ... (getRandomPieceType, isPositionValid remain the same) ...
 
 /**
  * Attempts to move the current piece left.
- * @param {object} currentState - The current game state.
- * @returns {object} - New state if move is valid, otherwise the original state.
  */
 function moveLeft(currentState) {
     const { currentPiece, board } = currentState;
-    if (!currentPiece) return currentState; // No piece to move
-
-    // Create hypothetical new piece position
+    if (!currentPiece || currentState.isGameOver) return currentState;
     const nextPiece = { ...currentPiece, x: currentPiece.x - 1 };
-
-    // Check if the hypothetical position is valid
-    if (isPositionValid(nextPiece, board)) {
-        // Return new state with updated piece
-        return { ...currentState, currentPiece: nextPiece };
-    } else {
-        // Return original state if move is invalid
-        return currentState;
-    }
+    return isPositionValid(nextPiece, board) ? { ...currentState, currentPiece: nextPiece } : currentState;
 }
 
 /**
  * Attempts to move the current piece right.
- * @param {object} currentState - The current game state.
- * @returns {object} - New state if move is valid, otherwise the original state.
  */
 function moveRight(currentState) {
     const { currentPiece, board } = currentState;
-    if (!currentPiece) return currentState;
-
+    if (!currentPiece || currentState.isGameOver) return currentState;
     const nextPiece = { ...currentPiece, x: currentPiece.x + 1 };
-
-    if (isPositionValid(nextPiece, board)) {
-        return { ...currentState, currentPiece: nextPiece };
-    } else {
-        return currentState;
-    }
+    return isPositionValid(nextPiece, board) ? { ...currentState, currentPiece: nextPiece } : currentState;
 }
 
 /**
- * Attempts to move the current piece down.
- * @param {object} currentState - The current game state.
- * @returns {object} - New state if move is valid, otherwise the original state.
+ * Attempts to move the current piece down (used by player input).
+ * Also resets the gravity timer if successful.
  */
 function moveDown(currentState) {
     const { currentPiece, board } = currentState;
-    if (!currentPiece) return currentState;
+    if (!currentPiece || currentState.isGameOver) return currentState;
 
     const nextPiece = { ...currentPiece, y: currentPiece.y + 1 };
 
     if (isPositionValid(nextPiece, board)) {
+        // Move was valid, return new state and reset gravity timer
+        lastDropTime = millis(); // Reset timer on manual down move
         return { ...currentState, currentPiece: nextPiece };
     } else {
-        // If moving down is invalid, it means the piece should lock (or game over)
-        // TODO: Implement piece locking logic here or in the main game loop/update function
-        // For now, just return the original state
-        console.log("Cannot move down, potential lock position reached."); // Placeholder log
+        // If moving down is invalid, player action doesn't lock the piece,
+        // but gravity will handle it soon. Just return original state.
         return currentState;
+    }
+}
+
+/**
+ * Handles the automatic downward movement due to gravity.
+ * Separated from player-controlled moveDown.
+ * @param {object} currentState
+ * @returns {object} New state if moved, original state if needs locking.
+ */
+function applyGravity(currentState) {
+    const { currentPiece, board } = currentState;
+    if (!currentPiece || currentState.isGameOver) return currentState;
+
+    const nextPiece = { ...currentPiece, y: currentPiece.y + 1 };
+
+    if (isPositionValid(nextPiece, board)) {
+        // Gravity move successful
+        return { ...currentState, currentPiece: nextPiece };
+    } else {
+        // Gravity move failed - piece should lock
+        console.log("Gravity: Piece needs to lock!"); // Placeholder log
+        // Trigger locking logic (returns state *after* locking and spawning next)
+        // return lockPieceAndSpawnNext(currentState); // << Future implementation
+        return currentState; // For now, return original state (piece stops falling)
     }
 }
 
 
 /**
- * Spawns a new piece and returns the updated game state.
- * @param {object} currentState The current game state.
- * @returns {object} A new game state object with the new piece.
+ * Spawns a new piece.
  */
 function spawnPiece(currentState) {
+    // ... (spawnPiece logic remains the same) ...
     const type = getRandomPieceType();
     const initialX = Math.floor(BOARD_WIDTH / 2) - 1;
-    const initialY = 0; // Adjust if pieces consistently spawn too high/low based on shapes
-
+    const initialY = 0;
     const newPiece = { type: type, rotation: 0, x: initialX, y: initialY };
 
-    // TODO: Add game over check: if (!isPositionValid(newPiece, currentState.board)) -> set isGameOver = true
-    // For now, assume valid spawn
+    // TODO: Game Over check: if (!isPositionValid(newPiece, currentState.board)) ...
     return { ...currentState, currentPiece: newPiece };
 }
 
 /**
- * Creates the initial game state, including the first spawned piece.
- * @returns {object} The complete initial game state.
+ * Creates the initial game state.
  */
 function getInitialState() {
+    // ... (getInitialState logic remains the same) ...
     const initialBoard = Array(BOARD_HEIGHT).fill(null).map(() => Array(BOARD_WIDTH).fill(0));
     const baseState = {
         board: initialBoard, currentPiece: null, nextPiece: null,
         score: 0, level: 1, isGameOver: false,
     };
-    const initialState = spawnPiece(baseState);
-    // TODO: Implement 'nextPiece' generation
-    return initialState;
+    return spawnPiece(baseState);
 }
 
 
 // --- P5.js Functions ---
 function setup() {
     createCanvas(BOARD_WIDTH * BLOCK_SIZE, BOARD_HEIGHT * BLOCK_SIZE);
+    // Place canvas inside the container div
+    const canvas = createCanvas(BOARD_WIDTH * BLOCK_SIZE, BOARD_HEIGHT * BLOCK_SIZE);
+    canvas.parent('canvas-container'); // Attach canvas to the main element
+
     console.log("Canvas created:", width, "x", height);
     gameState = getInitialState();
     console.log("Initial game state:", gameState);
-    frameRate(60);
+    lastDropTime = millis(); // Initialize gravity timer
+    frameRate(30); // Lower frame rate slightly? Optional.
 }
 
 function draw() {
-    // --- 1. Update Game Logic ---
-    // (Gravity will call moveDown periodically - coming soon)
+    // --- 1. Handle Timing and Game Logic Update ---
+    const currentTime = millis();
+
+    // Check if it's time for gravity to apply
+    if (!gameState.isGameOver && currentTime - lastDropTime > currentDropInterval) {
+        const stateBeforeGravity = gameState;
+        gameState = applyGravity(gameState);
+        lastDropTime = currentTime; // Reset timer *after* attempting gravity
+
+        // Check if gravity failed (piece needs to lock)
+        // This check assumes applyGravity returns the *same object* if locking is needed
+        // (or alternatively, sets a flag in the returned state)
+        if (gameState === stateBeforeGravity && gameState.currentPiece) {
+             // applyGravity tried to move down but couldn't.
+             // This means the piece hit something. Time to lock!
+             console.log("DRAW LOOP: Triggering Lock Sequence (TBD)");
+             // gameState = lockPieceAndSpawnNext(gameState); // << Future implementation
+        }
+    }
 
     // --- 2. Render Game State ---
     drawBoard(gameState.board);
     if (gameState.currentPiece) {
         drawPiece(gameState.currentPiece);
     }
-    // Draw UI elements (Score, etc. - coming later)
+
+    // Display Game Over message if applicable
+    if (gameState.isGameOver) {
+        fill(0, 0, 0, 150); // Semi-transparent black overlay
+        rect(0, 0, width, height);
+        fill(255, 100, 100); // Red text
+        textSize(32);
+        textAlign(CENTER, CENTER);
+        textFont('Nunito'); // Ensure font is applied here too
+        text("GAME OVER", width / 2, height / 2);
+    }
+    // Draw other UI elements (Score, etc. - coming later)
 }
 
 // --- Rendering Functions ---
-
-/** Draws a single block */
-function drawBlock(row, col, colorIndex) {
-    if (colorIndex === 0) return;
-    const blockColor = COLORS[colorIndex] || [128, 128, 128];
-    const x = col * BLOCK_SIZE;
-    const y = row * BLOCK_SIZE;
-    fill(blockColor);
-    stroke(BORDER_COLOR);
-    strokeWeight(1.5);
-    rect(x, y, BLOCK_SIZE, BLOCK_SIZE, 3);
-}
-
-/** Draws the game board */
-function drawBoard(board) {
-    background(COLORS[0]);
-    for (let r = 0; r < board.length; r++) {
-        for (let c = 0; c < board[r].length; c++) {
-            if (board[r][c] !== 0) {
-                drawBlock(r, c, board[r][c]);
-            }
-        }
-    }
-}
-
-/** Draws the currently falling piece */
-function drawPiece(piece) {
-    if (!piece || !TETROMINOES[piece.type]) return;
-    const pieceDefinition = TETROMINOES[piece.type];
-    const rotationIndex = piece.rotation % pieceDefinition.shapes.length;
-    const shape = pieceDefinition.shapes[rotationIndex];
-    if (!shape) return;
-    const colorIndex = pieceDefinition.color;
-    shape.forEach(offset => {
-        drawBlock(piece.y + offset[0], piece.x + offset[1], colorIndex);
-    });
-}
-
+// ... (drawBlock, drawBoard, drawPiece remain the same) ...
 
 // --- Input Handling ---
-
-/**
- * Handles keyboard input for moving the piece.
- * Called automatically by p5.js when a key is pressed.
- */
 function keyPressed() {
-    if (gameState.isGameOver) return; // Don't handle input if game is over
+    if (gameState.isGameOver) return;
 
     let newState = gameState; // Start with the current state
+    let stateChanged = false; // Track if player input did something
 
-    // Use p5.js key codes
     if (keyCode === LEFT_ARROW) {
         newState = moveLeft(gameState);
+        stateChanged = newState !== gameState;
     } else if (keyCode === RIGHT_ARROW) {
         newState = moveRight(gameState);
+        stateChanged = newState !== gameState;
     } else if (keyCode === DOWN_ARROW) {
-        newState = moveDown(gameState);
+        newState = moveDown(gameState); // moveDown now also resets timer
+        stateChanged = newState !== gameState;
         // Optional: Add scoring for manual downward movement later
     }
-    // else if (keyCode === UP_ARROW) {
-    //     newState = rotatePiece(gameState); // Rotation TBD
-    // }
-    // else if (key === ' ') {
-    //     // Hard drop TBD
-    // }
+    // ... (other keys like UP_ARROW for rotation later) ...
 
     // Update the global game state ONLY if it changed
-    if (newState !== gameState) {
+    if (stateChanged) {
          gameState = newState;
-         console.log("State updated by input:", keyCode); // Log for debugging
+         console.log("State updated by input:", keyCode);
     }
 }
 
 // --- Helper Functions (Logic - To be implemented) ---
 
+// function lockPieceAndSpawnNext(currentState) { /* ... return updatedState */ }
 // function rotatePiece(currentState) { /* return updatedState */ }
-// function lockPieceAndClearLines(currentState) { /* return updatedState */ }
-// function updateGame(currentState) { /* Handles gravity, locking, clearing, etc. */ }
+// function updateGame(currentState) { /* Main update loop combining logic */ }
