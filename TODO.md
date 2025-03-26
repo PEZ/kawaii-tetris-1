@@ -31,23 +31,20 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
     *   `[X]` Use `drawBlock` for rendering cells.
 *   **[ ] Tetromino Definitions:**
     *   `[ ]` **Verify/Correct the shapes of all 7 tetrominoes and all rotations.** Store this as data in `TETROMINOES`. <- **Still Important!**
-    *   `[X]` Implement a function `getRandomPieceType()` that returns a random key ('I', 'L', etc.) from `TETROMINOES`.
+    *   `[X]` Implement `getRandomPieceType()`.
 *   **[X] Spawning Pieces:**
-    *   `[X]` Implement a function `spawnPiece(gameState)`:
-        *   `[X]` Uses `getRandomPieceType()` to get the next piece type.
-        *   `[X]` Creates a new piece object (type, initial rotation, starting x/y).
-        *   `[X]` Returns a *new* game state with the `currentPiece` updated.
-    *   `[X]` Update `getInitialState()` to call `spawnPiece` to set the first `currentPiece`.
-*   **[ ] Basic Piece Movement (User Input):**
-    *   `[ ]` Handle keyboard input (`LEFT_ARROW`, `RIGHT_ARROW`, `DOWN_ARROW`) in p5.js `keyPressed()`. <- **Next**
-    *   `[ ]` Implement pure functions `moveLeft(gameState)`, `moveRight(gameState)`, `moveDown(gameState)` that return a *new* game state if the move is valid. <- **Next**
-    *   `[ ]` Update `gameState` in `keyPressed()` based on the results of these movement functions. <- **Next**
-*   **[ ] Basic Collision Detection (Floor & Walls):**
-    *   `[ ]` Implement a helper function `isPositionValid(piece, boardData)` that checks if a piece's position is within bounds and not overlapping settled blocks on the board. <- **Needed for Movement**
-    *   `[ ]` Enhance movement functions (`moveLeft`, `moveRight`, `moveDown`) to use `isPositionValid` before returning the new state. <- **Needed for Movement**
+    *   `[X]` Implement `spawnPiece(gameState)`.
+    *   `[X]` Update `getInitialState()` to call `spawnPiece`.
+*   **[X] Basic Piece Movement (User Input):**
+    *   `[X]` Handle keyboard input (`LEFT_ARROW`, `RIGHT_ARROW`, `DOWN_ARROW`) in p5.js `keyPressed()`.
+    *   `[X]` Implement pure functions `moveLeft(gameState)`, `moveRight(gameState)`, `moveDown(gameState)`.
+    *   `[X]` Update `gameState` in `keyPressed()`.
+*   **[X] Basic Collision Detection (Floor & Walls):**
+    *   `[X]` Implement `isPositionValid(piece, boardData)`.
+    *   `[X]` Enhance movement functions to use `isPositionValid`.
 *   **[ ] Gravity (Automatic Downward Movement):**
-    *   `[ ]` Use p5.js `draw()` loop timing (e.g., frame count or `millis()`) to trigger automatic downward movement.
-    *   `[ ]` Apply the `moveDown(gameState)` logic periodically.
+    *   `[ ]` Use p5.js `draw()` loop timing (e.g., frame count or `millis()`) to trigger automatic downward movement. <- **Next**
+    *   `[ ]` Apply the `moveDown(gameState)` logic periodically. <- **Next**
 *   **[X] Rendering the Current Piece:**
     *   `[X]` Implement `drawPiece(pieceData)`.
     *   `[X]` Call `drawPiece` in the main `draw()` loop.
@@ -62,14 +59,77 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
 ---
 
 ##  milestone 2: Gameplay Polish & Basic Kawaii 🌸
-... (rest remains the same) ...
+
+**Goal:** Implement core gameplay features like rotation, locking, line clearing, and scoring. Start introducing the "kawaii" look and feel.
+
+**Tasks:**
+
+*   `[ ]` Piece Rotation Logic (Clockwise/Counter-Clockwise).
+    *   `[ ]` Implement rotation transformation logic (pure function on piece data).
+    *   `[ ]` Handle input for rotation.
+    *   `[ ]` Add collision detection for rotation (walls, floor, other pieces).
+*   `[ ]` Piece Locking Mechanism.
+    *   `[ ]` Detect when a piece cannot move down further (collides with floor or settled pieces).
+    *   `[ ]` Merge the `currentPiece` blocks into the main `board` data structure.
+    *   `[ ]` Trigger spawning of a new piece.
+*   `[ ]` Line Clearing Logic.
+    *   `[ ]` Check for completed lines after a piece locks.
+    *   `[ ]` Implement function to remove completed lines and shift rows above down. (Focus on data transformation!).
+*   `[ ]` Basic Scoring System.
+    *   `[ ]` Add `score` to `gameState`.
+    *   `[ ]` Update score based on lines cleared.
+    *   `[ ]` Display score on screen.
+*   `[ ]` "Next Piece" Preview.
+    *   `[ ]` Add `nextPiece` to `gameState`.
+    *   `[ ]` Implement logic to generate and store the next piece.
+    *   `[ ]` Render the next piece in a designated area.
+*   `[ ]` Game Over Condition.
+    *   `[ ]` Detect when a new piece spawns overlapping existing blocks (game over).
+    *   `[ ]` Add `isGameOver` flag to `gameState`.
+    *   `[ ]` Stop game loop / display game over message.
+*   `[ ]` **Basic Kawaii Assets:**
+    *   `[ ]` Design or find simple, cute block sprites/colors.
+    *   `[ ]` Update rendering functions to use these basic assets instead of plain rectangles.
 
 ---
 
 ## 🎀 Milestone 3: Full Kawaii Experience & Refinements
-... (rest remains the same) ...
+
+**Goal:** Fully realize the "kawaii" theme with polished visuals, sound, and UI. Improve mobile experience and add quality-of-life features.
+
+**Tasks:**
+
+*   `[ ]` **Full Asset Integration:**
+    *   `[ ]` Final cute block designs.
+    *   `[ ]` Kawaii background(s).
+    *   `[ ]` Themed UI elements (score display, next piece box, borders).
+*   `[ ]` Sound Effects & Music:
+    *   `[ ]` Add cute sounds for movement, rotation, locking, line clearing, game over.
+    *   `[ ]` Add cheerful background music (optional).
+*   `[ ]` Mobile Controls:
+    *   `[ ]` Implement touch controls (swipe gestures, on-screen buttons).
+    *   `[ ]` Ensure responsive layout.
+*   `[ ]` Enhanced UI:
+    *   `[ ]` "Game Over" screen with score and restart option.
+    *   `[ ]` Pause functionality.
+    *   `[ ]` Start screen/menu (optional).
+*   `[ ]` Visual Polish:
+    *   `[ ]` Animations/effects for line clearing.
+    *   `[ ]` Piece landing/locking feedback.
+*   `[ ]` Difficulty Scaling (Optional):
+    *   `[ ]` Increase speed based on score or level.
 
 ---
 
 ## 🚀 Future Ideas (Post-MVP)
-... (rest remains the same) ...
+
+*   `[ ]` Leaderboards (Local storage or backend).
+*   `[ ]` Different Kawaii Themes.
+*   `[ ]` Special block types or power-ups.
+*   `[ ]` Hold piece functionality.
+*   `[ ]` Ghost piece (preview of where the piece will land).
+*   `[ ]` More complex scoring (T-spins, combos).
+*   `[ ]` Accessibility improvements (colorblind modes, configurable controls).
+*   `[ ]` Code Refactoring & Optimization pass.
+
+---
