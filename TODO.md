@@ -16,17 +16,17 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
 **Tasks:**
 
 *   **[X] Project Setup:**
-    *   `[ ]` Basic HTML file (`index.html`) to host the p5.js sketch.
-    *   `[ ]` Basic p5.js sketch file (`sketch.js`).
-    *   `[ ]` Include p5.js library.
-    *   `[ ]` Link `sketch.js` in `index.html`.
+    *   `[X]` Basic HTML file (`index.html`) to host the p5.js sketch.
+    *   `[X]` Basic p5.js sketch file (`sketch.js`).
+    *   `[X]` Include p5.js library.
+    *   `[X]` Link `sketch.js` in `index.html`.
 *   **[X] Game State Definition:**
-    *   `[ ]` Define the core `gameState` data structure (e.g., a JavaScript object).
-    *   `[ ]` Include `board` (e.g., a 2D array representing the grid, perhaps using numbers or null for empty cells).
+    *   `[X]` Define the core `gameState` data structure (e.g., a JavaScript object).
+    *   `[X]` Include `board` (e.g., a 2D array representing the grid, perhaps using numbers or null for empty cells).
     *   `[ ]` Include `currentPiece` (object with `shape`, `x`, `y`, `rotation` properties). <- _Partially done, structure defined_
-    *   `[ ]` Define initial state function/value.
+    *   `[X]` Define initial state function/value.
 *   **[ ] Board Representation & Rendering:**
-    *   `[ ]` Define board dimensions (width, height in grid units).
+    *   `[X]` Define board dimensions (width, height in grid units).
     *   `[ ]` Implement a function `drawBoard(boardData)` that renders the grid based on the `board` in the game state. <- **Next**
     *   `[ ]` Use simple rectangles for filled cells for now. <- **Next**
 *   **[ ] Tetromino Definitions:**
