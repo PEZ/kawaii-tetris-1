@@ -5,17 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaii Tetris 🧸</title>
     <style>
-        /* Basic reset to remove default margin/padding */
-        body {
+        /* Basic reset */
+        html, body {
             margin: 0;
             padding: 0;
-            /* Optional: Center canvas */
+            height: 100%;
+        }
+        body {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column; /* Stack canvas and footer vertically */
+            justify-content: center; /* Center items vertically */
+            align-items: center; /* Center items horizontally */
             min-height: 100vh;
-            background-color: #f0f0f0; /* Light background for contrast */
-            overflow: hidden; /* Prevent scrollbars if canvas is large */
+            background-color: #f0f0f0;
+            font-family: sans-serif; /* Basic font for footer */
+        }
+        /* p5.js canvas will be inserted here by the script */
+        main {
+             /* Optional: Add some margin around the canvas if needed */
+             margin-bottom: 1em;
+        }
+        footer {
+            padding: 5px;
+            font-size: 0.8em;
+            color: #555;
+            text-align: center;
+        }
+        footer a {
+            color: #007bff; /* Standard link blue */
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
         }
     </style>
     <!-- Include the p5.js library (using a CDN) -->
@@ -24,6 +45,11 @@
     <script src="sketch.js"></script>
 </head>
 <body>
-    <!-- p5.js will automatically create a canvas here -->
+    <!-- p5.js will automatically create a canvas inside this main element -->
+    <main id="canvas-container"></main>
+
+    <footer>
+        Source: <a href="https://github.com/PEZ/kawaii-tetris-1" target="_blank" rel="noopener noreferrer">github.com/PEZ/kawaii-tetris-1</a>
+    </footer>
 </body>
 </html>
