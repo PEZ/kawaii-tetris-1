@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaii Tetris 🧸</title>
+    <!-- Google Font Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Basic reset */
         html, body {
@@ -13,40 +17,66 @@
         }
         body {
             display: flex;
-            flex-direction: column; /* Stack canvas and footer vertically */
-            justify-content: center; /* Center items vertically */
-            align-items: center; /* Center items horizontally */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            background-color: #f0f0f0;
-            font-family: sans-serif; /* Basic font for footer */
+            background-color: #fdf6f9; /* Slightly warmer pink background */
+            font-family: 'Nunito', sans-serif; /* Apply Kawaii font */
+            color: #443344; /* Dark muted color for text */
         }
-        /* p5.js canvas will be inserted here by the script */
         main {
-             /* Optional: Add some margin around the canvas if needed */
              margin-bottom: 1em;
+        }
+        .controls {
+            margin-bottom: 1em;
+            padding: 0.5em 1em;
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white bg */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.9em;
+            text-align: center; /* Center text inside controls box */
+        }
+        .controls kbd { /* Style keyboard keys */
+            display: inline-block;
+            background-color: #eee;
+            border-radius: 3px;
+            padding: 2px 5px;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #999;
+            font-family: monospace; /* Use mono for keys */
+            font-size: 1.1em;
+            margin: 0 2px;
         }
         footer {
             padding: 5px;
             font-size: 0.8em;
-            color: #555;
+            color: #776677; /* Muted color for footer */
             text-align: center;
         }
         footer a {
-            color: #007bff; /* Standard link blue */
+            color: #ff69b4; /* Hot pink link color */
             text-decoration: none;
+            font-weight: bold;
         }
         footer a:hover {
             text-decoration: underline;
         }
     </style>
-    <!-- Include the p5.js library (using a CDN) -->
+    <!-- p5.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
-    <!-- Include our game script (AFTER p5.js) -->
+    <!-- Game script -->
     <script src="sketch.js"></script>
 </head>
 <body>
-    <!-- p5.js will automatically create a canvas inside this main element -->
+    <h1>Kawaii Tetris 🧸🧱✨</h1> <!-- Added a title -->
+
     <main id="canvas-container"></main>
+
+    <div class="controls">
+        Controls: <kbd>←</kbd> Left | <kbd>→</kbd> Right | <kbd>↓</kbd> Down
+        <br> (Rotation/Drop coming soon!)
+    </div>
 
     <footer>
         Source: <a href="https://github.com/PEZ/kawaii-tetris-1" target="_blank" rel="noopener noreferrer">github.com/PEZ/kawaii-tetris-1</a>
