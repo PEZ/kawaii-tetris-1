@@ -8,12 +8,12 @@ Welcome to **Kawaii Tetris** - the classic block-stacking puzzle game you know a
 
 This project is an experiment in **"Vibe Coding"** with **Google Gemini 1.5 Pro**.
 
-It aims to replicate the spirit and functionality of the Kawaii Tetris concept originally vibe coded by **Megan Ben Dor Ruthven** ([LinkedIn Profile](https://www.linkedin.com/in/maruthven/)). We're exploring how AI collaboration can facilitate development, particularly using functional and data-oriented approaches inspired by Clojure principles within a p5.js context.
+It draws heavy inspiration from **"Cute Tetris"**, originally vibe coded by **Megan Ben Dor Ruthven** ([LinkedIn](https://www.linkedin.com/in/maruthven/), [GitHub Repo](https://github.com/mbdr-byte/ai-code)). We're exploring how AI collaboration can facilitate development, particularly using functional and data-oriented approaches inspired by Clojure principles within a p5.js context, aiming for a "Kawaii" aesthetic twist.
 
 ## ✨ Features
 
-*   Classic Tetris gameplay.
-*   Adorable, kawaii-themed graphics and style.
+*   Classic Tetris gameplay (in progress).
+*   Adorable, kawaii-themed graphics and style (planned).
 *   Runs smoothly on desktop and mobile browsers.
 *   Built with the creative coding library [p5.js](https://p5js.org/).
 *   Automatically deployed to GitHub Pages.
