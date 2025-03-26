@@ -28,6 +28,11 @@
         main {
              margin-bottom: 1em;
         }
+        h1 {
+            color: #ff69b4; /* Hot pink title */
+            margin-bottom: 0.5em; /* Adjust spacing */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
         .controls {
             margin-bottom: 1em;
             padding: 0.5em 1em;
@@ -47,6 +52,7 @@
             font-family: monospace; /* Use mono for keys */
             font-size: 1.1em;
             margin: 0 2px;
+            vertical-align: middle; /* Align keys better with text */
         }
         footer {
             padding: 5px;
@@ -69,13 +75,13 @@
     <script src="sketch.js"></script>
 </head>
 <body>
-    <h1>Kawaii Tetris 🧸🧱✨</h1> <!-- Added a title -->
+    <h1>Kawaii Tetris 🧸🧱✨</h1>
 
     <main id="canvas-container"></main>
 
     <div class="controls">
-        Controls: <kbd>←</kbd> Left | <kbd>→</kbd> Right | <kbd>↓</kbd> Down
-        <br> (Rotation/Drop coming soon!)
+        Controls: <kbd>←</kbd> Left | <kbd>→</kbd> Right | <kbd>↓</kbd> Down | <kbd>↑</kbd> Rotate
+        <br> (More coming soon!)
     </div>
 
     <footer>

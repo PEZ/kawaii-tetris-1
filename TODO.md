@@ -13,48 +13,7 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
 *   Separate game logic (state transformations) from rendering (drawing the state).
 *   Keep functions small and focused.
 
-**Tasks:**
-
-*   **[X] Project Setup:**
-    *   `[X]` Basic HTML file (`index.html`) to host the p5.js sketch.
-    *   `[X]` Basic p5.js sketch file (`sketch.js`).
-    *   `[X]` Include p5.js library.
-    *   `[X]` Link `sketch.js` in `index.html`.
-*   **[X] Game State Definition:**
-    *   `[X]` Define the core `gameState` data structure.
-    *   `[X]` Include `board`.
-    *   `[X]` Include `currentPiece` structure.
-    *   `[X]` Define initial state function/value.
-*   **[X] Board Representation & Rendering:**
-    *   `[X]` Define board dimensions.
-    *   `[X]` Implement `drawBoard(boardData)`.
-    *   `[X]` Use `drawBlock` for rendering cells.
-*   **[ ] Tetromino Definitions:**
-    *   `[ ]` **Verify/Correct the shapes of all 7 tetrominoes and all rotations.** Store this as data in `TETROMINOES`. <- **Important Ongoing Task!**
-    *   `[X]` Implement `getRandomPieceType()`.
-*   **[X] Spawning Pieces:**
-    *   `[X]` Implement `spawnPiece(gameState)`.
-    *   `[X]` Update `getInitialState()` to call `spawnPiece`.
-*   **[X] Basic Piece Movement (User Input):**
-    *   `[X]` Handle keyboard input (`LEFT_ARROW`, `RIGHT_ARROW`, `DOWN_ARROW`) in p5.js `keyPressed()`.
-    *   `[X]` Implement pure functions `moveLeft(gameState)`, `moveRight(gameState)`, `moveDown(gameState)`.
-    *   `[X]` Update `gameState` in `keyPressed()`.
-*   **[X] Basic Collision Detection (Floor & Walls):**
-    *   `[X]` Implement `isPositionValid(piece, boardData)`.
-    *   `[X]` Enhance movement functions to use `isPositionValid`.
-*   **[X] Gravity (Automatic Downward Movement):**
-    *   `[X]` Use p5.js `draw()` loop timing (`millis()`) to trigger automatic downward movement.
-    *   `[X]` Apply the `moveDown` logic periodically via `applyGravity`.
-*   **[X] Rendering the Current Piece:**
-    *   `[X]` Implement `drawPiece(pieceData)`.
-    *   `[X]` Call `drawPiece` in the main `draw()` loop.
-*   **[X] Basic Game Loop Integration:**
-    *   `[X]` `setup()` initializes the game state.
-    *   `[X]` `draw()` clears background, draws board, draws piece. Handles gravity timing.
-*   **[X] Deployment Setup (GitHub Actions & Pages):**
-    *   `[X]` Workflow file created and configured.
-    *   `[X]` Repository settings configured.
-    *   `[X]` Verified deployment working.
+**Tasks:** All tasks completed [X]
 
 ---
 
@@ -64,34 +23,39 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
 
 **Tasks:**
 
-*   **[ ] Piece Locking Mechanism:** <- **Next Major Logic Step**
-    *   `[ ]` Detect when a piece cannot move down further (collides with floor or settled pieces). <- _Partially detected in `draw()` loop_
-    *   `[ ]` Implement `lockPieceAndSpawnNext(gameState)`:
-        *   `[ ]` **Merge the `currentPiece` blocks into the main `board` data structure.** (Crucial part)
-        *   `[ ]` Trigger spawning of a new piece (call `spawnPiece`).
-    *   `[ ]` Integrate `lockPieceAndSpawnNext` into the `draw()` loop's gravity check.
-*   **[ ] Piece Rotation Logic (Clockwise/Counter-Clockwise):**
-    *   `[ ]` Implement rotation transformation logic (pure function updating `piece.rotation`).
-    *   `[ ]` Handle input for rotation (`UP_ARROW`?).
-    *   `[ ]` Enhance `isPositionValid` or add specific checks for rotation collisions (walls, floor, other pieces - potential need for wall kicks TBD).
-*   **[ ] Line Clearing Logic:**
-    *   `[ ]` Check for completed lines *after* a piece locks (within `lockPieceAndSpawnNext` or called from it).
-    *   `[ ]` Implement function to remove completed lines and shift rows above down. (Focus on data transformation!).
-*   **[ ] Basic Scoring System:**
-    *   `[ ]` Add `score` to `gameState`.
-    *   `[ ]` Update score based on lines cleared (e.g., 1 line = 100 pts, 4 lines = 800 pts).
-    *   `[ ]` Display score on screen.
-*   **[ ] "Next Piece" Preview:**
+*   **[X] Piece Locking Mechanism:**
+    *   `[X]` Detect when a piece cannot move down further (gravity fails).
+    *   `[X]` Implement `lockPieceAndSpawnNext(gameState)`:
+        *   `[X]` Merge the `currentPiece` blocks into the main `board` data structure.
+        *   `[X]` Trigger spawning of a new piece (call `spawnPiece`).
+    *   `[X]` Integrate `lockPieceAndSpawnNext` into the `draw()` loop's gravity check.
+*   **[X] Piece Rotation Logic (Clockwise):**
+    *   `[X]` Implement rotation transformation logic (`rotatePiece` function).
+    *   `[X]` Handle input for rotation (`UP_ARROW`).
+    *   `[X]` Add basic collision detection for rotation including simple wall kicks.
+    *   `[ ]` _Optional: Implement more complex SRS wall/floor kicks if needed._
+*   **[X] Line Clearing Logic:**
+    *   `[X]` Check for completed lines after a piece locks (within `checkForLineClears`).
+    *   `[X]` Implement `checkForLineClears` to remove completed lines and shift rows down.
+    *   `[X]` Integrate call to `checkForLineClears` within `lockPieceAndSpawnNext`.
+*   **[X] Basic Scoring System:**
+    *   `[X]` Add `score` to `gameState`.
+    *   `[X]` Update score based on lines cleared in `lockPieceAndSpawnNext` using `SCORE_PER_LINE`.
+    *   `[ ]` Display score on screen. <- **Next UI Step**
+*   **[ ] "Next Piece" Preview:** <- **Next Major Logic Step**
     *   `[ ]` Add `nextPiece` property to `gameState`.
-    *   `[ ]` Update `spawnPiece` and `lockPieceAndSpawnNext` to manage a queue or generate the next piece.
-    *   `[ ]` Render the next piece in a designated area (likely requires adjusting canvas size/layout).
+    *   `[ ]` Update `spawnPiece` and `lockPieceAndSpawnNext` to manage a queue (e.g., use `nextPiece` to set `currentPiece`, then generate a new `nextPiece`).
+    *   `[ ]` Render the next piece in a designated area (will require UI layout adjustments).
 *   **[ ] Game Over Condition:**
-    *   `[ ]` Properly detect when a new piece spawns overlapping existing blocks (within `spawnPiece`).
-    *   `[ ]` Add `isGameOver` flag to `gameState`.
-    *   `[ ]` Stop game loop / input handling more formally when `isGameOver` is true.
+    *   `[ ]` Properly detect when a new piece spawns overlapping existing blocks (within `spawnPiece` or `lockPieceAndSpawnNext`).
+    *   `[X]` Add `isGameOver` flag to `gameState`.
+    *   `[X]` Stop game loop / input handling partially when `isGameOver` is true.
+    *   `[X]` Display basic "Game Over" message.
+    *   `[ ]` Implement more formal game state stop/restart.
 *   **[ ] **Basic Kawaii Assets:**
-    *   `[ ]` Design or find simple, cute block sprites/colors (Current colors are a start!).
-    *   `[ ]` Update rendering functions (`drawBlock`?) to potentially use images instead of `rect` if using sprites.
+    *   `[X]` Initial Kawaii color palette implemented.
+    *   `[ ]` Design or find simple, cute block sprites/graphics (optional upgrade).
+    *   `[ ]` Update rendering functions (`drawBlock`?) to potentially use images.
 
 ---
 
@@ -102,7 +66,7 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
 **Tasks:**
 
 *   `[ ]` **Full Asset Integration:**
-    *   `[ ]` Final cute block designs.
+    *   `[ ]` Final cute block designs / sprites.
     *   `[ ]` Kawaii background(s).
     *   `[ ]` Themed UI elements (score display, next piece box, borders).
 *   `[ ]` Sound Effects & Music:
@@ -112,7 +76,7 @@ This document outlines the development plan for Kawaii Tetris. Tasks are grouped
     *   `[ ]` Implement touch controls (swipe gestures, on-screen buttons).
     *   `[ ]` Ensure responsive layout.
 *   `[ ]` Enhanced UI:
-    *   `[ ]` "Game Over" screen with score and restart option.
+    *   `[ ]` Nicer "Game Over" screen with score and restart option.
     *   `[ ]` Pause functionality.
     *   `[ ]` Start screen/menu (optional).
 *   `[ ]` Visual Polish:
