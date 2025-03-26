@@ -3,18 +3,19 @@ const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
 const BLOCK_SIZE = 30; // pixels
 
-// Simple color definitions for now
+// SUPER KAWAII Color definitions! ✨💖🍬
 const COLORS = {
-    0: [240, 240, 240], // Background (empty cell) - Light gray
-    1: [0, 255, 255],   // Cyan (I piece) - Using standard Tetris colors for now
-    2: [255, 165, 0],   // Orange (L piece)
-    3: [255, 255, 0],   // Yellow (O piece)
-    4: [0, 0, 255],     // Blue (J piece)
-    5: [0, 255, 0],     // Green (S piece)
-    6: [128, 0, 128],   // Purple (T piece)
-    7: [255, 0, 0]      // Red (Z piece)
+    0: [250, 240, 245], // Background (empty cell) - Very Light Pink/Off-white
+    1: [137, 207, 240], // Baby Blue (I piece?)
+    2: [255, 182, 193], // Light Pink (L piece?)
+    3: [255, 253, 150], // Pastel Yellow (O piece?)
+    4: [191, 155, 219], // Lavender (J piece?)
+    5: [144, 238, 144], // Light Green (S piece?)
+    6: [255, 160, 190], // Soft Coral/Pink (T piece?)
+    7: [255, 218, 185]  // Peach Puff (Z piece?)
+    // Feel free to tweak these hex/RGB values!
 };
-const BORDER_COLOR = [80, 80, 80]; // Slightly darker gray for borders
+const BORDER_COLOR = [120, 100, 110]; // A slightly muted purple/gray border
 
 // --- Tetromino Definitions ---
 // Shapes defined via [row, col] offsets relative to pivot.
